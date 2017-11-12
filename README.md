@@ -13,7 +13,7 @@ Before every whole-cell experiment, the seal teast is recorded (-10mV step for 2
   
   
   
-  ### Assumptions
+### Assumptions
   CSV to be read into the file should contain the following columns of data:
   
   - mouse	
@@ -31,12 +31,36 @@ Before every whole-cell experiment, the seal teast is recorded (-10mV step for 2
 
   
   
-  ### Things You Will Need to Change
+### Things You Will Need to Change
   
   - file_name
   - os.chdir (working directory) 
   - column names if you don't use the ones I've listed above
   
-  ### Important Notes
+  
+### Output
+  
+  Four csv files:
+  
+  * file_name_per_cell.csv (Data per cell  with input resistance and capacitance calculations)
+  * file_name_per_mouse.csv (Data aggregated per mouse  with input resistance and capacitance calculations [with desc stats per mouse])
+  * file_name_per_cell_desc.csv (Descriptive statistics with each cell as an n of 1)
+  * file_name_per_mouse_desc.csv (Descriptive statistics with average of cells per mouse as an n of 1 [more accurate])
+  
+  
+  
+  
+### Important Notes
   
   - Save directory is the same as the source directory. To save in a different directory, place another os.chir() statement with the new output directory above the "Save Data" Section of the script.
+  
+  
+### Reference Information
+
+Author: Haley E. Speed, PhD
+
+Department of Neurology and Neurotherapeutics
+
+University of Texas Southwestern Medical Center, Dallas, TX
+
+Copyright 2017

@@ -1,5 +1,5 @@
 # membrane_properties.py
-Python program to analyze Input Resistance and Capacitance from seal tests in whole-cell patch clamp
+Python 3.6 program to analyze Input Resistance and Capacitance from seal tests in whole-cell patch clamp
 
 ### About
 Before every whole-cell experiment, the seal teast is recorded (-10mV step for 200ms, 10 sweeps at least) to measure the input resistance and capacitance offline. Using clampfit, the last 10 sweeps of the seal test are averaged and the area between the step onset and offset is taken as the charge (Q). The membrane capacitance is then roughly estimated by the equation:

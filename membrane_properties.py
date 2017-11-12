@@ -5,7 +5,7 @@
 
 
 #--------------------------------------------------------------------------------------------------------------------------------------#
-# Import Packages 																													   #
+# Import Packages 																									                                                        				   #
 #--------------------------------------------------------------------------------------------------------------------------------------#
 
 import pandas as pd
@@ -14,13 +14,24 @@ import csv
 import numpy as np
 
 
+#--------------------------------------------------------------------------------------------------------------------------------------#
+# Define variables 																												                                                        	   #
+#--------------------------------------------------------------------------------------------------------------------------------------#
+file_name = 'data.csv'
+directory = 'C:\\Python'
+treatment1 = 'vehicle'
+treatment2 = 'drug'
+genotype1 = 'W'
+genotype2 = 'K'
+step = -10
+
 
 #--------------------------------------------------------------------------------------------------------------------------------------#
-# Define functions 																													   #
+# Define functions 																						                                                         							   #
 #--------------------------------------------------------------------------------------------------------------------------------------#
 
 # Calculate Input Resistance 
-def inputR (i, step = -10):				# V = IR where V = -10 mV step and I is in pA
+def inputR (i, step):				# V = IR where V = -10 mV step and I is in pA
     return (step/(i/10**9)) / 10**6		# Converted to MOhm before return	
 
 # Calculate Membrane Capacitance
@@ -28,43 +39,44 @@ def cm_q (q, step = -10):				# C = Q/V where Q = area under the current step and
     return (q * 0.001)/(step/1000) / 1000	# Converted to microF (nF) before being returned
 	
 
-def sample_size(raw_data):
-	w_v_n = 0
-	w_r_n = 0
-	k_v_n = 0
-	k_r_n = 0
+def sample_size(raw_data, genotype1, genotype2, treatment1, treatment2):
+	n1 = 0
+	n2 = 0
+	n3 = 0
+	n4 = 0
 
 	# Calculate sample sizes and assign genotype/treatment groups
 	raw_data['group'] = 0
+	raw_data['n'] = 0
 	for index, row in raw_data.iterrows():
-		if 'W' in row['genotype']: 
-			if 'vehicle' in row['treatment']:
-				w_v_n = w_v_n + 1
+		if genotype1 in row['genotype']: 
+			if treatment1 in row['treatment']:
+				n1 = n1 + 1
 				raw_data.loc[index:index:,'group'] = 1
-			elif 'rhosin' in row['treatment']:
-				w_r_n = w_r_n + 1 
+			elif treatment2 in row['treatment']:
+				n2 = n2 + 1 
 				raw_data.loc[index:index:,'group'] = 2
-		elif 'K' in row['genotype']:
-			if 'vehicle' in row['treatment']:
-				k_v_n = k_v_n + 1
+		elif genotype2 in row['genotype']:
+			if treatment1 in row['treatment']:
+				n3 = n3 + 1
 				raw_data.loc[index:index:,'group'] = 3
-			elif 'rhosin' in row['treatment']:
-				k_r_n = k_r_n + 1
+			elif treatment2 in row['treatment']:
+				n4 = n4 + 1
 				raw_data.loc[index:index:,'group'] = 4
-
+	
 	# Assign sample sizes
 	for index, row in raw_data.iterrows():
-		if 'W' in row['genotype']: 
-			if 'vehicle' in row['treatment']:
-				raw_data.loc[index:index:,'n'] = w_v_n
-			elif 'rhosin' in row['treatment']:
-				raw_data.loc[index:index:,'n'] = w_r_n
-		elif 'K' in row['genotype']:
-			if 'vehicle' in row['treatment']:
-				raw_data.loc[index:index:,'n'] = k_v_n
-			elif 'rhosin' in row['treatment']:
-				raw_data.loc[index:index:,'n'] = k_r_n
-	return(raw_data, w_v_n, w_r_n, k_v_n, k_r_n)
+		if genotype1 in row['genotype']: 
+			if treatment1 in row['treatment']:
+				raw_data.loc[index:index:,'n'] = n1
+			elif treatment2 in row['treatment']:
+				raw_data.loc[index:index:,'n'] = n2
+		elif genotype2 in row['genotype']:
+			if treatment1 in row['treatment']:
+				raw_data.loc[index:index:,'n'] = n3
+			elif treatment2 in row['treatment']:
+				raw_data.loc[index:index:,'n'] = n4
+	return(raw_data)
 	
 
 def per_cell (raw_data):
@@ -140,21 +152,20 @@ def per_mouse (collapse_per_mouse):
 	
 
 #--------------------------------------------------------------------------------------------------------------------------------------#
-# Main Program 								    																					   #
+# Main Program 								    																			                                                        		   #
 #--------------------------------------------------------------------------------------------------------------------------------------#	
 
 # Read the csv file into a pandas dataframe
-file_name = 'membrane properties.csv'
-os.chdir('D:\\Dropbox\\')
+os.chdir(directory)
 raw_data = pd.read_csv(file_name)
 
 # Calculate Input Resistance and Membrane capacitance
-raw_data['inputR(MOhm)'] = inputR(raw_data['current(pA)'])
-raw_data['capacitance_q(nF)'] = cm_q(raw_data['charge(pA*s)'])
+raw_data['inputR(MOhm)'] = inputR(raw_data['current(pA)'], step)
+raw_data['capacitance_q(nF)'] = cm_q(raw_data['charge(pA*s)'], step)
 
 
 #Get sample size for each group and assign group ID for sorting
-raw_data, w_v_n, w_r_n, k_v_n, k_r_n = sample_size(raw_data) 
+raw_data = sample_size(raw_data, genotype1, genotype2, treatment1, treatment2) 
 
 # Get descriptive stats per cell
 per_cell_desc = per_cell(raw_data)
@@ -164,7 +175,7 @@ per_mouse_desc = per_mouse(collapse_per_mouse)
 
 
 #--------------------------------------------------------------------------------------------------------------------------------------#
-# Save Data 								    																					   #
+# Save Data 								    																			                                                          		   #
 #--------------------------------------------------------------------------------------------------------------------------------------#	
 
 # Save raw data with Input Resistance and Capacitance to file

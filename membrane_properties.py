@@ -144,9 +144,8 @@ def per_mouse (collapse_per_mouse):
 #--------------------------------------------------------------------------------------------------------------------------------------#	
 
 # Read the csv file into a pandas dataframe
-file_name = 'KCTD13 membrane properties High Cl-.csv'
-#os.chdir('C:\\Users\\hspeed\Dropbox\\sync all computers\\Presentations and Papers\\Ktcd13\\Rhosin mIPSCs\\Clampfit Analysis\\analyzed')
-os.chdir('D:\\Dropbox\\sync all computers\\Presentations and Papers\\Ktcd13\\Rhosin mIPSCs\\Clampfit Analysis\\analyzed')
+file_name = 'membrane properties.csv'
+os.chdir('D:\\Dropbox\\')
 raw_data = pd.read_csv(file_name)
 
 # Calculate Input Resistance and Membrane capacitance
